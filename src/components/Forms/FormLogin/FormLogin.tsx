@@ -105,6 +105,7 @@ const FormLogin = () => {
                         </div>
                         <div>
                             <CustomInput
+                                isPassword
                                 label={'API Key'}
                                 handleChange={(value: any) => {
                                     setFieldValue('apiKey', value);
@@ -114,6 +115,7 @@ const FormLogin = () => {
                         </div>
                         <div>
                             <CustomInput
+                                isPassword
                                 label={'API Secret'}
                                 handleChange={(value: any) => {
                                     setFieldValue('apiSecret', value);
@@ -124,6 +126,7 @@ const FormLogin = () => {
                         {values.needPassword && (
                             <div>
                                 <CustomInput
+                                    isPassword
                                     label={'API Password'}
                                     handleChange={(value: any) => {
                                         setFieldValue('password', value);
