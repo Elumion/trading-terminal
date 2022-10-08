@@ -25,6 +25,7 @@
     "@reduxjs/toolkit": "^1.8.1",
     "axios": "^0.27.2",
     "ccxt": "^1.77.63",
+    "cors-anywhere": "^0.4.4",
     "express": "^4.18.1",
     "formik": "^2.2.9",
     "node-fetch": "^2.6.7",
