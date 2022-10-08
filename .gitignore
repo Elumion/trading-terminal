@@ -3,3 +3,4 @@ dist
 packages
 .webpack
 out
+exchanges_API_Info.json
