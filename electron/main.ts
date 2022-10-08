@@ -1,72 +1,78 @@
-import { app, BrowserWindow, ipcMain,screen } from 'electron'
+import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { globalConfig } from './global_config';
 import fs from 'fs';
 
+import { createCors } from './cors';
 
-if (!fs.existsSync("global_config.json")){
-  fs.writeFileSync("global_config.json", JSON.stringify(globalConfig, null, 4),'utf-8')
+if (!fs.existsSync('global_config.json')) {
+    fs.writeFileSync(
+        'global_config.json',
+        JSON.stringify(globalConfig, null, 4),
+        'utf-8',
+    );
 }
 
+let mainWindow: BrowserWindow | null;
 
-let mainWindow: BrowserWindow | null
-
-declare const MAIN_WINDOW_WEBPACK_ENTRY: string
-declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
+declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
+declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 // const assetsPath =
 //   process.env.NODE_ENV === 'production'
 //     ? process.resourcesPath
 //     : app.getAppPath()
 
-function createWindow () {
-  const primaryDisplay = screen.getPrimaryDisplay()
-  const { width, height } = primaryDisplay.workAreaSize
-  mainWindow = new BrowserWindow({
-    // icon: path.join(assetsPath, 'assets', 'icon.png'),
-    width: width,
-    height: height,
-    minWidth:730,
-    minHeight:height,
-    backgroundColor: '#2e2e2e',
-    title:"Trading terminal",
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY
-    }
-  })
+function createWindow() {
+    const primaryDisplay = screen.getPrimaryDisplay();
+    const { width, height } = primaryDisplay.workAreaSize;
+    mainWindow = new BrowserWindow({
+        // icon: path.join(assetsPath, 'assets', 'icon.png'),
+        width: width,
+        height: height,
+        minWidth: 730,
+        minHeight: height,
+        backgroundColor: '#2e2e2e',
+        title: 'Trading terminal',
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+        },
+    });
 
-  // mainWindow.removeMenu();
+    // mainWindow.removeMenu();
 
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
+    mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+    });
 }
 
-async function registerListeners () {
-  /**
-   * This comes from bridge integration, check bridge.ts
-   */
-  ipcMain.on('message', (_, message) => {
-    console.log(message)
-  })
+async function registerListeners() {
+    /**
+     * This comes from bridge integration, check bridge.ts
+     */
+    ipcMain.on('message', (_, message) => {
+        console.log(message);
+    });
 }
 
 app.on('ready', createWindow)
-  .whenReady()
-  .then(registerListeners)
-  .catch(e => console.error(e))
+    .whenReady()
+    .then(registerListeners)
+    .catch(e => console.error(e));
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
 
 app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
-})
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+    }
+});
+
+createCors();
