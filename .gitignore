@@ -3,3 +3,5 @@ dist
 packages
 .webpack
 out
+exchanges_API_Info.json
+global_config.json
