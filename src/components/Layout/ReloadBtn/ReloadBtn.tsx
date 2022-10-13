@@ -21,6 +21,8 @@ const ReloadBtn = () => {
     };
 
     const reloadOrders = async (exchange: any) => {
+        exchange.setSandboxMode(true); //=============
+
         const orders = await exchange.fetchOpenOrders();
         dispatch(addHandOrders(orders));
     };
@@ -40,9 +42,9 @@ const ReloadBtn = () => {
                 <path
                     fill="none"
                     stroke="#ffffff"
-                    stroke-linecap="round"
-                    stroke-miterlimit="10"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeMiterlimit="10"
+                    strokeWidth="2"
                     d="M22.1,23.4C20.2,25,17.7,26,15,26C8.9,26,4,21.1,4,15 M7.9,6.6C9.8,5,12.3,4,15,4c6.1,0,11,4.9,11,11"
                 />
                 <path d="M26,20l-4-6h8L26,20z" />

@@ -17,7 +17,6 @@ export const addHandOrders: any = createAsyncThunk<any>(
     'orders/addOrders',
     async (orders, { rejectWithValue }) => {
         try {
-            exchange.setSandboxMode(true); //=============
             return orders;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
