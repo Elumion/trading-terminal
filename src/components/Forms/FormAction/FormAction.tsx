@@ -11,23 +11,42 @@ import {
     ModesContainer,
     Errors,
 } from './FormActionstyles';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Fee, Precision, SelectedCoin } from '../../../@types/coin';
 
-const FormAction = ({
-    selectedCoin,
-    amountValue,
-    handleAmountChange,
-    limitValue,
-    handleLimitChange,
-    handleAction,
-    toggleAction,
-    action,
-    available,
-    accuracy,
-    mode,
-    handleModeChange,
-    fee,
-}: any) => {
+interface Props {
+    selectedCoin: SelectedCoin | null;
+    amountValue: number;
+    limitValue: number;
+    action: string;
+    available: number;
+    accuracy: { precision: Precision };
+    mode: string;
+    fee: Fee;
+    handleLimitChange: (value: string | number) => void;
+    handleAction: (e: React.SyntheticEvent) => void;
+    toggleAction: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    handleModeChange: (value: string) => void;
+    handleAmountChange: (value: string | number) => void;
+}
+
+const FormAction = (actionObj: Props) => {
+    const {
+        selectedCoin,
+        amountValue,
+        handleAmountChange,
+        limitValue,
+        handleLimitChange,
+        handleAction,
+        toggleAction,
+        action,
+        available,
+        accuracy,
+        mode,
+        handleModeChange,
+        fee,
+    } = actionObj;
+
     const defineCoin = () => {
         if (selectedCoin) {
             return action === 'buy' ? selectedCoin.limit : selectedCoin.amount;
@@ -36,12 +55,11 @@ const FormAction = ({
     const defineVolume = () =>
         amountValue && limitValue ? +(amountValue * limitValue) : 0;
 
-    const handleProcentClick = (e: any) => {
+    const handleProcentClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        let amountResult: any;
-        const procent = +parseInt(e.target.innerText) * 0.01;
-
+        let amountResult: number = 0;
+        const procent = +parseInt((e.target as HTMLElement).innerText) * 0.01;
         if (mode === 'limit') {
             if (limitValue) {
                 if (procent === 1) {
@@ -68,15 +86,19 @@ const FormAction = ({
         handleAmountChange(amountResult.toFixed(accuracy.precision.amount));
     };
 
-    const changeMode = (e: any) => {
-        const elements = [...e.target.parentElement.children];
-        elements.forEach(el =>
+    const changeMode = (e: React.MouseEvent<HTMLElement>) => {
+        const target = e.target as HTMLParagraphElement;
+
+        const elements = target?.parentElement && [
+            ...target.parentElement.children,
+        ];
+        elements?.forEach(el =>
             el.classList.contains('chosed')
                 ? el.classList.remove('chosed')
                 : null,
         );
-        e.target.classList.add('chosed');
-        handleModeChange(e.target.innerText.toLowerCase());
+        target.classList.add('chosed');
+        handleModeChange(target.innerText.toLowerCase());
     };
 
     return (
