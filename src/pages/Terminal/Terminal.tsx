@@ -1,6 +1,6 @@
 import { isString } from 'formik';
 import { stat } from 'fs';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { CoinsList } from '../../components/CoinsList';
@@ -79,7 +79,7 @@ const Terminal = () => {
     }, [kucoin]);
 
     const [action, setAction] = useState('buy');
-    const toggleAction = (e: any) => {
+    const toggleAction = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         action === 'buy' ? setAction('sell') : setAction('buy');
     };
@@ -106,7 +106,7 @@ const Terminal = () => {
         isNotValidFormAction(mode, amountValue, limitValue, setValid);
     }, [amountValue, limitValue, mode]);
 
-    const handleAction = (e: any) => {
+    const handleAction = (e: React.SyntheticEvent) => {
         e.preventDefault();
         isNotValidFormAction(mode, amountValue, limitValue, setValid);
         if (!selectedCoin) return toast.error('Please select coin!');
