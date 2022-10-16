@@ -37,7 +37,7 @@ const BalancesList = ({ balancesArray }: any) => {
                 <p className="available">Available amount</p>
                 <p className="holds">In orders</p>
             </Heading>
-            <StyledUl>
+            <StyledUl className="scroll">
                 {renderBalances(balancesArray) || 'no available balances'}
             </StyledUl>
         </>
