@@ -7,11 +7,14 @@ import {
     HeaderOuterContainer,
     AddExchangeBtn,
     SelectContainer,
+    LayoutContainer,
 } from './Layout.styles';
 import { SelectExchange } from './SelectEcxhange';
+import { TopBar } from '../TopBar';
 const Layout = ({ children }: any) => {
     return (
-        <div>
+        <LayoutContainer>
+            <TopBar />
             <Header>
                 <HeaderOuterContainer>
                     <Navigation>
@@ -34,8 +37,8 @@ const Layout = ({ children }: any) => {
                 </HeaderOuterContainer>
                 <ReloadBtn />
             </Header>
-            {children}
-        </div>
+            <div>{children}</div>
+        </LayoutContainer>
     );
 };
 
