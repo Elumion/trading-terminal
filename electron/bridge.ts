@@ -1,90 +1,136 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron';
 import fs from 'fs';
 
 let exportGlobalConfig;
-if (fs.existsSync("global_config.json")){
-  exportGlobalConfig = JSON.parse(fs.readFileSync("global_config.json", 'utf-8'))
+if (fs.existsSync('global_config.json')) {
+    exportGlobalConfig = JSON.parse(
+        fs.readFileSync('global_config.json', 'utf-8'),
+    );
 }
 
-const pathToJSON = "exchanges_API_Info.json";
+const pathToJSON = 'exchanges_API_Info.json';
+
+const { remote } = require('electron');
 
 export const api = {
-  globalConfig: exportGlobalConfig,
+    globalConfig: exportGlobalConfig,
 
-  editExchange:async (exchange:any)=>{
-    let exchanges = [];
-    if (fs.existsSync(pathToJSON)) {
-        exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
+    editExchange: async (exchange: any) => {
+        let exchanges = [];
+        if (fs.existsSync(pathToJSON)) {
+            exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
 
-        const editExchange = exchanges.filter((el:any) => el.id === exchange.id)[0];
-        editExchange.name = exchange.name;
-        editExchange.apiKey = exchange.apikey;
-        editExchange.secret = exchange.secret;
-        if (editExchange.password) editExchange.password = exchange.password;
+            const editExchange = exchanges.filter(
+                (el: any) => el.id === exchange.id,
+            )[0];
+            editExchange.name = exchange.name;
+            editExchange.apiKey = exchange.apikey;
+            editExchange.secret = exchange.secret;
+            if (editExchange.password)
+                editExchange.password = exchange.password;
 
-        try { 
-          fs.writeFileSync(pathToJSON, JSON.stringify(exchanges, null, 4), 'utf-8'); 
-          return 'Exchange saved, Success!';
-         }
-        catch (e) { console.log('Failed to save the file !'); }
-    }
-  },
-
-  deleteExchange:(exchangeId:{id:string})=>{
-    let exchanges = [];
-    if (fs.existsSync(pathToJSON)) {
-        exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
-
-        const resultExchanges = exchanges.filter((el:any) => el.id !== exchangeId.id);
-
-        try { fs.writeFileSync(pathToJSON, JSON.stringify(resultExchanges, null, 4), 'utf-8'); }
-        catch (e) { console.log('Failed to save the file !'); }
-    }
-    return `Exchange deleted`;
-  },
-
-  addExchange:(newExchange:any)=>{
-    let exchanges = [];
-    if (fs.existsSync(pathToJSON)) {
-        exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
-        exchanges.push(newExchange);
-        try { fs.writeFileSync(pathToJSON, JSON.stringify(exchanges, null, 4), 'utf-8'); }
-        catch (e) { console.log('Failed to save the file !'); }
-
-    }
-    else {
-        try {
-            fs.writeFileSync(pathToJSON, JSON.stringify([newExchange], null, 4), 'utf-8');
-            exchanges = [newExchange];
+            try {
+                fs.writeFileSync(
+                    pathToJSON,
+                    JSON.stringify(exchanges, null, 4),
+                    'utf-8',
+                );
+                return 'Exchange saved, Success!';
+            } catch (e) {
+                console.log('Failed to save the file !');
+            }
         }
-        catch (e) { console.log('Failed to save the file !'); }
+    },
 
-    }
+    deleteExchange: (exchangeId: { id: string }) => {
+        let exchanges = [];
+        if (fs.existsSync(pathToJSON)) {
+            exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
 
-    return exchanges;
-  },
+            const resultExchanges = exchanges.filter(
+                (el: any) => el.id !== exchangeId.id,
+            );
 
-  getExchanges:()=> {
-    let exchanges = [];
-    if (fs.existsSync(pathToJSON)) {
-        exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
-    }
-    return exchanges;
-  },
+            try {
+                fs.writeFileSync(
+                    pathToJSON,
+                    JSON.stringify(resultExchanges, null, 4),
+                    'utf-8',
+                );
+            } catch (e) {
+                console.log('Failed to save the file !');
+            }
+        }
+        return `Exchange deleted`;
+    },
 
-   /* 
+    addExchange: (newExchange: any) => {
+        let exchanges = [];
+        if (fs.existsSync(pathToJSON)) {
+            exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
+            exchanges.push(newExchange);
+            try {
+                fs.writeFileSync(
+                    pathToJSON,
+                    JSON.stringify(exchanges, null, 4),
+                    'utf-8',
+                );
+            } catch (e) {
+                console.log('Failed to save the file !');
+            }
+        } else {
+            try {
+                fs.writeFileSync(
+                    pathToJSON,
+                    JSON.stringify([newExchange], null, 4),
+                    'utf-8',
+                );
+                exchanges = [newExchange];
+            } catch (e) {
+                console.log('Failed to save the file !');
+            }
+        }
+
+        return exchanges;
+    },
+
+    getExchanges: () => {
+        let exchanges = [];
+        if (fs.existsSync(pathToJSON)) {
+            exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
+        }
+        return exchanges;
+    },
+
+    /* 
    The function below can accessed using `window.Main.sendMessage`
    */
-  sendMessage: (message: string) => {
-    ipcRenderer.send('message', message)
-  },
+    sendMessage: (message: string) => {
+        ipcRenderer.send('message', message);
+    },
 
-  /**
-   * Provide an easier way to listen to events
-   */
-  on: (channel: string, callback: Function) => {
-    ipcRenderer.on(channel, (_, data) => callback(data))
-  }
-}
+    /**
+     * Provide an easier way to listen to events
+     */
+    on: (channel: string, callback: Function) => {
+        ipcRenderer.on(channel, (_, data) => callback(data));
+    },
+    minimize: () => {
+        var window = remote.getCurrentWindow();
+        window.minimize();
+    },
+    maximize: () => {
+        var window = remote.getCurrentWindow();
+        if (!window.isMaximized()) {
+            window.maximize();
+        } else {
+            window.unmaximize();
+        }
+    },
+    close: () => {
+        var window = remote.getCurrentWindow();
+        window.close();
+    },
+};
 
-contextBridge.exposeInMainWorld('Main', api)
+contextBridge.exposeInMainWorld('Main', api);

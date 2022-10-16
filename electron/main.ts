@@ -33,14 +33,18 @@ function createWindow() {
         minHeight: height,
         backgroundColor: '#2e2e2e',
         title: 'Trading terminal',
+        frame: false,
+        titleBarStyle: 'customButtonsOnHover',
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
             preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+            enableRemoteModule: true,
+            // preload: assetsPath.join(app.getAppPath(), 'preload.js'),
         },
     });
 
-    // mainWindow.removeMenu();
+    mainWindow.removeMenu();
 
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
