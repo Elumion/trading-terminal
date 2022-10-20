@@ -1,4 +1,5 @@
-import React from 'react';
+import { ipcRenderer } from 'electron/renderer';
+import React, { useEffect, useState } from 'react';
 import { TopBarContainer } from './TopBar.styles';
 
 export default function TopBar() {
@@ -6,7 +7,7 @@ export default function TopBar() {
         window.Main.minimize();
     };
     const handleMaximize = () => {
-        window.Main.maximize();
+        const result = window.Main.maximize();
     };
     const handleClose = () => {
         window.Main.close();
@@ -16,9 +17,9 @@ export default function TopBar() {
         <TopBarContainer>
             <p>Trading Terminal</p>
             <div className="buttons__container">
-                <button onClick={handleMinimize}>-</button>
-                <button onClick={handleMaximize}>||</button>
-                <button onClick={handleClose}>X</button>
+                <button className="minimize" onClick={handleMinimize}></button>
+                <button className="maximize" onClick={handleMaximize}></button>
+                <button className="close" onClick={handleClose}></button>
             </div>
         </TopBarContainer>
     );
