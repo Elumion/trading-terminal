@@ -7,6 +7,7 @@ import { CoinsList } from '../../components/CoinsList';
 import { FormAction } from '../../components/Forms/FormAction/';
 import { isNotValidFormAction } from '../../components/Forms/FormAction/validate';
 import { OrdersList } from '../../components/OrdersList';
+import { useTerminal } from '../../hooks/useTerminal';
 import { fetchBalance } from '../../redux/balanceReducer';
 import { fetchCoins } from '../../redux/coinsReducer';
 import { fetchFee } from '../../redux/feeReducer';
@@ -16,41 +17,29 @@ import { store } from '../../redux/store';
 import { TerminalContainer } from './Terminal.style';
 const Terminal = () => {
     const ccxt = (window as any).ccxt;
-    let kucoin: any = useSelector((state: any) => state.SelectedExchange.data);
-
-    const dispatch = useDispatch();
-    let balance = useSelector((state: any) =>
-        state.balance.data ? state.balance.data : null,
-    );
-
-    let coins: any = useSelector((state: any) =>
-        state.coins.data ? state.coins.data : [],
-    );
-
-    let selectedCoin = useSelector((state: any) =>
-        state.selectedCoin.data ? state.selectedCoin.data : null,
-    );
-
-    const [accuracy, setAccuracy] = useState({
-        precision: { price: 11, amount: 11 },
-    });
-
-    const [amountValue, setAmountValue]: [any, any] = useState('');
-    const [limitValue, setLimitValue]: [any, any] = useState('');
-
-    const [available, setAvailable]: [any, any] = useState(0);
-    const [valid, setValid]: [string | boolean, any] =
-        useState('Please select coin');
-
-    let fee = useSelector((state: any) =>
-        state.fee.data ? state.fee.data : { maker: 0, taker: 0 },
-    );
-
-    let orders = useSelector((state: any) =>
-        state.orders.data ? state.orders.data : [],
-    );
-
-    const [mode, setMode] = useState('limit');
+    const {
+        kucoin,
+        dispatch,
+        balance,
+        coins,
+        selectedCoin,
+        accuracy,
+        setAccuracy,
+        amountValue,
+        setAmountValue,
+        limitValue,
+        setLimitValue,
+        available,
+        setAvailable,
+        valid,
+        setValid,
+        fee,
+        orders,
+        mode,
+        setMode,
+        action,
+        setAction,
+    } = useTerminal();
 
     const handleModeChange = (value: string) => setMode(value);
 
@@ -72,39 +61,10 @@ const Terminal = () => {
         setAccuracy(accuracy);
     };
 
-    useEffect(() => {
-        dispatch(fetchBalance(kucoin));
-        dispatch(fetchCoins(kucoin));
-        dispatch(fetchOrders(kucoin));
-    }, [kucoin]);
-
-    const [action, setAction] = useState('buy');
     const toggleAction = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         action === 'buy' ? setAction('sell') : setAction('buy');
     };
-
-    useEffect(() => {
-        const handleBalance = () => {
-            let result: any;
-            if (balance && selectedCoin) {
-                const currency =
-                    action === 'buy' ? selectedCoin.limit : selectedCoin.amount;
-                if (balance[currency]) result = balance[currency].free;
-            } else result = 0;
-
-            setAvailable(result ? result : 0);
-        };
-        handleBalance();
-    }, [action, balance, selectedCoin]);
-
-    useEffect(() => {
-        dispatch(fetchOrders(kucoin));
-    }, [balance]);
-
-    useEffect(() => {
-        isNotValidFormAction(mode, amountValue, limitValue, setValid);
-    }, [amountValue, limitValue, mode]);
 
     const handleAction = (e: React.SyntheticEvent) => {
         e.preventDefault();
