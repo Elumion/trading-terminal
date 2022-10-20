@@ -23,7 +23,7 @@ const Exchanges = () => {
 
     useEffect(() => {
         dispatch(fetchExchanges());
-    }, []);
+    }, [open]);
 
     const [editObj, setEditObj]: any = useState({
         name: '',
@@ -63,6 +63,7 @@ const Exchanges = () => {
             ...editingExchange,
             ...editObj,
             apiKey: editObj.apikey,
+            apiSecret: editObj.apisecret,
         };
         let newExchange: any;
         const ccxt = (window as any).ccxt;
@@ -76,7 +77,7 @@ const Exchanges = () => {
         } else {
             newExchange = new ccxt[`${validateExchange.exchange}`]({
                 apiKey: validateExchange.apiKey,
-                secret: validateExchange.apiSecret,
+                apiSecret: validateExchange.apiSecret,
                 proxy: (window as any).Main.globalConfig.proxy,
             });
         }
@@ -84,13 +85,12 @@ const Exchanges = () => {
         newExchange
             .fetchBalance()
             .then((data: any) => {
-                (window as any).Main.editExchange(editObj);
+                (window as any).Main.editExchange(validateExchange);
                 setOpen(false);
                 toast.success('Exchange changed!');
             })
             .then(dispatch(exchangeSelected(newExchange)))
             .catch((err: any) => toast.error(err.message));
-        dispatch(fetchExchanges());
     };
 
     const handleDelete = () => {
@@ -132,10 +132,10 @@ const Exchanges = () => {
                     />
                     <CustomInput
                         handleChange={(value: string) => {
-                            handleObjChange(value, 'secret');
+                            handleObjChange(value, 'apisecret');
                         }}
                         label={'API Secret'}
-                        value={editObj.secret}
+                        value={editObj.apisecret}
                     />
                     {editObj.password && (
                         <CustomInput

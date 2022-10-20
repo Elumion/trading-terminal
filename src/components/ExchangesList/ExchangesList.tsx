@@ -24,7 +24,7 @@ const ExchangesList = ({
                         data-id={el.id}
                         data-name={el.name}
                         data-apikey={el.apiKey}
-                        data-secret={el.apiSecret}
+                        data-apisecret={el.apiSecret}
                         data-password={el.password}
                         onClick={handleClick}
                     >

@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import fs from 'fs';
+import { Exchange } from '../src/@types/redux.types';
 
 let exportGlobalConfig;
 if (fs.existsSync('global_config.json')) {
@@ -15,7 +16,7 @@ const { remote } = require('electron');
 export const api = {
     globalConfig: exportGlobalConfig,
 
-    editExchange: async (exchange: any) => {
+    editExchange: async (exchange: Exchange) => {
         let exchanges = [];
         if (fs.existsSync(pathToJSON)) {
             exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
@@ -24,8 +25,8 @@ export const api = {
                 (el: any) => el.id === exchange.id,
             )[0];
             editExchange.name = exchange.name;
-            editExchange.apiKey = exchange.apikey;
-            editExchange.secret = exchange.secret;
+            editExchange.apiKey = exchange.apiKey;
+            editExchange.apiSecret = exchange.apiSecret;
             if (editExchange.password)
                 editExchange.password = exchange.password;
 
@@ -121,11 +122,13 @@ export const api = {
     },
     maximize: () => {
         var window = remote.getCurrentWindow();
+        let isMaximized;
         if (!window.isMaximized()) {
             window.maximize();
         } else {
             window.unmaximize();
         }
+        return isMaximized;
     },
     close: () => {
         var window = remote.getCurrentWindow();

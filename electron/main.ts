@@ -44,13 +44,16 @@ function createWindow() {
         },
     });
 
-    mainWindow.removeMenu();
+    // mainWindow.removeMenu();
 
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
+
+    mainWindow.center();
+    mainWindow.maximize();
 }
 
 async function registerListeners() {
