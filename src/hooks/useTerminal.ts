@@ -5,20 +5,21 @@ import { isNotValidFormAction } from '../components/Forms/FormAction/validate';
 import { fetchBalance } from '../redux/balanceReducer';
 import { fetchCoins } from '../redux/coinsReducer';
 import { fetchOrders } from '../redux/ordersReducer';
+import { RootState, useAppDispatch } from '../redux/store';
 
 export const useTerminal = () => {
-    let kucoin: any = useSelector((state: any) => state.SelectedExchange.data);
+    let kucoin = useSelector((state: RootState) => state.SelectedExchange.data);
 
-    const dispatch = useDispatch();
-    let balance = useSelector((state: StoreInterface) =>
+    const dispatch = useAppDispatch();
+    let balance = useSelector((state: RootState) =>
         state.balance.data ? state.balance.data : null,
     );
 
-    let coins: any = useSelector((state: any) =>
+    let coins = useSelector((state: RootState) =>
         state.coins.data ? state.coins.data : [],
     );
 
-    let selectedCoin = useSelector((state: any) =>
+    let selectedCoin = useSelector((state: RootState) =>
         state.selectedCoin.data ? state.selectedCoin.data : null,
     );
 
@@ -33,17 +34,17 @@ export const useTerminal = () => {
     const [valid, setValid]: [string | boolean, any] =
         useState('Please select coin');
 
-    let fee = useSelector((state: any) =>
+    let fee = useSelector((state: RootState) =>
         state.fee.data ? state.fee.data : { maker: 0, taker: 0 },
     );
 
-    let orders = useSelector((state: any) =>
+    let orders = useSelector((state: RootState) =>
         state.orders.data ? state.orders.data : [],
     );
 
     const [mode, setMode] = useState('limit');
 
-    const [action, setAction] = useState('buy');
+    const [action, setAction] = useState<'buy' | 'sell'>('buy');
 
     useEffect(() => {
         dispatch(fetchBalance(kucoin));
@@ -55,7 +56,7 @@ export const useTerminal = () => {
         const handleBalance = () => {
             let result: any;
             if (balance && selectedCoin) {
-                const currency =
+                let currency =
                     action === 'buy' ? selectedCoin.limit : selectedCoin.amount;
                 if (balance[currency]) result = balance[currency].free;
             } else result = 0;

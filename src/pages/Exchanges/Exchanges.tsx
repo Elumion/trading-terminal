@@ -11,15 +11,18 @@ import {
     exchangeSelected,
     resetSelectedExchange,
 } from '../../redux/selectedExchangeReducer';
+import { RootState, useAppDispatch } from '../../redux/store';
 
 const Exchanges = () => {
-    const exchanges: any = useSelector((state: any) => state.exchanges.data);
-    const selectedId = useSelector((state: any) => state.SelectedExchange.id);
+    const exchanges = useSelector((state: RootState) => state.exchanges.data);
+    const selectedId = useSelector(
+        (state: RootState) => state.SelectedExchange.id,
+    );
     const [open, setOpen]: [boolean, any] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(fetchExchanges());
