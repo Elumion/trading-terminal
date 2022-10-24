@@ -1,17 +1,12 @@
+import { Balance, Balances, Exchange, Market } from 'ccxt';
+
 export interface StoreInterface {
     balance: {
         data: {
             info: {
                 code: string;
                 data: {
-                    [key: number]: {
-                        id: string;
-                        currency: string;
-                        type: string;
-                        balance: string;
-                        available: string;
-                        holds: string;
-                    };
+                    [key: number]: Balance;
                 };
             };
             used: {
@@ -33,57 +28,8 @@ export interface StoreInterface {
         status: string;
     };
     coins: {
-        data: {
-            id: string;
-            symbol: string;
-            base: string;
-            quote: string;
-            baseId: string;
-            quoteId: string;
-            type: string;
-            spot: boolean;
-            margin: boolean;
-            swap: boolean;
-            future: boolean;
-            option: boolean;
-            active: boolean;
-            contract: boolean;
-            precision: {
-                amount: number;
-                price: number;
-            };
-            limits: {
-                leverage: any;
+        data: Market[];
 
-                amount: {
-                    min: number;
-                    max: number;
-                };
-                price: any;
-                cost: {
-                    min: number;
-                    max: number;
-                };
-            };
-            info: {
-                symbol: string;
-                name: string;
-                baseCurrency: string;
-                quoteCurrency: string;
-                feeCurrency: string;
-                market: string;
-                baseMinSize: string;
-                quoteMinSize: string;
-                baseMaxSize: string;
-                quoteMaxSize: string;
-                baseIncrement: string;
-                quoteIncrement: string;
-                priceIncrement: string;
-                priceLimitRate: string;
-                isMarginEnabled: boolean;
-                enableTrading: boolean;
-            }[];
-        };
         status: string;
     };
     selectedCoin: {
@@ -93,23 +39,7 @@ export interface StoreInterface {
         };
     };
     fee: {
-        data: {
-            info: {
-                code: string;
-            };
-            data: {
-                [key: number]: {
-                    symbol: string;
-                    takerFeeRate: string;
-                    makerFeeRate: string;
-                };
-            };
-            symbol: string;
-            maker: number;
-            taker: number;
-            percentage: boolean;
-            tierBased: boolean;
-        };
+        data: ReduxFee;
         status: string;
     };
     orders: {
@@ -174,17 +104,35 @@ export interface StoreInterface {
         status: string;
     };
     exchanges: {
-        data: Exchange[];
+        data: SavedExchange[];
         status: string;
     };
     SelectedExchange: {
-        data: any;
+        data: Exchange;
         name: string;
         id: string;
     };
 }
 
-export interface Exchange {
+export interface ReduxFee {
+    info: {
+        code: string;
+    };
+    data: {
+        [key: number]: {
+            symbol: string;
+            takerFeeRate: string;
+            makerFeeRate: string;
+        };
+    };
+    symbol: string;
+    maker: number;
+    taker: number;
+    percentage: boolean;
+    tierBased: boolean;
+}
+
+export interface SavedExchange {
     id: string;
     exchange: string;
     name: string;
@@ -193,3 +141,70 @@ export interface Exchange {
     password: string;
     needPassword: true;
 }
+
+export type CustomBalance = {
+    id: string;
+    currency: string;
+    type: string;
+    balance: string;
+    available: string;
+    holds: string;
+} & Balances;
+
+export interface ReduxWrapper<T> {
+    data: T;
+    status: 'fulfilled' | 'rejected' | 'pending';
+}
+
+// COINS
+// {
+//     id: string;
+//     symbol: string;
+//     base: string;
+//     quote: string;
+//     baseId: string;
+//     quoteId: string;
+//     type: string;
+//     spot: boolean;
+//     margin: boolean;
+//     swap: boolean;
+//     future: boolean;
+//     option: boolean;
+//     active: boolean;
+//     contract: boolean;
+//     precision: {
+//         amount: number;
+//         price: number;
+//     };
+//     limits: {
+//         leverage: any;
+
+//         amount: {
+//             min: number;
+//             max: number;
+//         };
+//         price: any;
+//         cost: {
+//             min: number;
+//             max: number;
+//         };
+//     };
+//     info: {
+//         symbol: string;
+//         name: string;
+//         baseCurrency: string;
+//         quoteCurrency: string;
+//         feeCurrency: string;
+//         market: string;
+//         baseMinSize: string;
+//         quoteMinSize: string;
+//         baseMaxSize: string;
+//         quoteMaxSize: string;
+//         baseIncrement: string;
+//         quoteIncrement: string;
+//         priceIncrement: string;
+//         priceLimitRate: string;
+//         isMarginEnabled: boolean;
+//         enableTrading: boolean;
+//     }[];
+// };
