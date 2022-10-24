@@ -1,21 +1,23 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { Balances, Exchange } from 'ccxt';
+import { CustomBalance, ReduxWrapper } from '../@types/redux.types';
 
-export const fetchBalance: any = createAsyncThunk<any>(
+export const fetchBalance = createAsyncThunk(
     'balance/fetchBalance',
-    async (exchange: any, { rejectWithValue }) => {
+    async (exchange: Exchange, { rejectWithValue }) => {
         try {
             exchange.setSandboxMode(true); //=============
             const response = await exchange.fetchBalance();
-            return response;
+            return response as Balances;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
         }
     },
 );
 
-const initialState = {};
+const initialState = {} as ReduxWrapper<Balances>;
 
-const balanceSlice: any = createSlice<any, any, any>({
+const balanceSlice = createSlice({
     name: 'balance',
     initialState,
     reducers: {},
@@ -25,7 +27,7 @@ const balanceSlice: any = createSlice<any, any, any>({
             state.status = 'fulfilled';
         });
         builder.addCase(fetchBalance.rejected, (state, action) => {
-            state.data = action.payload;
+            // state.data = {};
             state.status = 'rejected';
         });
     },

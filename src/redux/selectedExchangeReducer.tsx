@@ -1,10 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { Exchange } from 'ccxt';
+
+const initialState = { data: {}, name: '', id: '' } as {
+    data: Exchange;
+    name: string;
+    id: string;
+};
 
 const selectExchangeSlice = createSlice({
     name: 'selectExchange',
-    initialState: {},
+    initialState,
     reducers: {
-        exchangeSelected(state: any, action: any) {
+        exchangeSelected(state, action) {
             try {
                 const values = action.payload;
                 let newExchange: any;
@@ -31,7 +38,7 @@ const selectExchangeSlice = createSlice({
             }
         },
         resetSelectedExchange: (state: any) => {
-            state.data = {};
+            state.data = null;
             state.name = '';
             state.id = '';
         },
