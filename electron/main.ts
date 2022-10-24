@@ -33,7 +33,7 @@ function createWindow() {
         minHeight: height,
         backgroundColor: '#2e2e2e',
         title: 'Trading terminal',
-        frame: false,
+        // frame: false,
         titleBarStyle: 'customButtonsOnHover',
         webPreferences: {
             nodeIntegration: false,
