@@ -2,6 +2,7 @@ import { Formik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { fetchExchanges } from '../../../redux/exchangesReducer';
+import { useAppDispatch } from '../../../redux/store';
 import { CustomInput } from '../../CustomInput';
 import { CustomSelect } from '../../CustomSelect';
 import { FormContainer } from './FormLogin.styles';
@@ -12,7 +13,7 @@ const FormLogin = () => {
         const error: any = Object.values(errorsObj)[0];
         toast.error(error);
     };
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     return (
         <Formik

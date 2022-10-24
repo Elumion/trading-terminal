@@ -1,3 +1,5 @@
+import { Balance } from 'ccxt';
+import { CustomBalance } from '../../@types/redux.types';
 import numberFormater from '../../logic/numberFormater';
 import { Heading, StyledLi, StyledUl } from './BalancesList.style';
 
@@ -12,7 +14,7 @@ const BalancesList = ({ balancesArray }: any) => {
         BTC: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
     };
 
-    const renderBalances = (arr: [any]) =>
+    const renderBalances = (arr: CustomBalance[]) =>
         arr?.map(el => (
             <StyledLi key={el.id}>
                 {imgPopularCoinsObj[el.currency] && (

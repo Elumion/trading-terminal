@@ -14,7 +14,7 @@ const CoinsList = ({ coins, selectCoin }: any) => {
     const [filteredCoins, setFilteredCoins] = useState(coins);
 
     const renderCoins = (arr: []): ReactNode =>
-        arr.map((elem: any) => (
+        arr?.map((elem: any) => (
             <StyledCoinsItem key={elem.id}>{elem.symbol}</StyledCoinsItem>
         ));
 

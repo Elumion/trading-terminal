@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import fs from 'fs';
-import { Exchange } from '../src/@types/redux.types';
+import { SavedExchange } from '../src/@types/redux.types';
 
 let exportGlobalConfig;
 if (fs.existsSync('global_config.json')) {
@@ -16,13 +16,12 @@ const { remote } = require('electron');
 export const api = {
     globalConfig: exportGlobalConfig,
 
-    editExchange: async (exchange: Exchange) => {
-        let exchanges = [];
+    editExchange: async (exchange: SavedExchange) => {
+        let exchanges: SavedExchange[];
         if (fs.existsSync(pathToJSON)) {
             exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
-
             const editExchange = exchanges.filter(
-                (el: any) => el.id === exchange.id,
+                el => el.id === exchange.id,
             )[0];
             editExchange.name = exchange.name;
             editExchange.apiKey = exchange.apiKey;
@@ -44,12 +43,12 @@ export const api = {
     },
 
     deleteExchange: (exchangeId: { id: string }) => {
-        let exchanges = [];
+        let exchanges: SavedExchange[];
         if (fs.existsSync(pathToJSON)) {
             exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
 
             const resultExchanges = exchanges.filter(
-                (el: any) => el.id !== exchangeId.id,
+                el => el.id !== exchangeId.id,
             );
 
             try {
@@ -65,7 +64,7 @@ export const api = {
         return `Exchange deleted`;
     },
 
-    addExchange: (newExchange: any) => {
+    addExchange: (newExchange: SavedExchange) => {
         let exchanges = [];
         if (fs.existsSync(pathToJSON)) {
             exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
@@ -95,12 +94,12 @@ export const api = {
         return exchanges;
     },
 
-    getExchanges: () => {
+    getExchanges: (): SavedExchange[] => {
         let exchanges = [];
         if (fs.existsSync(pathToJSON)) {
             exchanges = JSON.parse(fs.readFileSync(pathToJSON, 'utf-8'));
         }
-        return exchanges;
+        return exchanges as SavedExchange[];
     },
 
     /* 

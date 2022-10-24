@@ -1,17 +1,18 @@
+import { SavedExchange } from '../../@types/redux.types';
 import { StyledLi, StyledUl } from './ExchangesList.style';
 
 const ExchangesList = ({
     exchangesArray,
     editFunction,
 }: {
-    exchangesArray: [any];
+    exchangesArray: SavedExchange[];
     editFunction: any;
 }) => {
     const handleClick = (e: any) => {
         editFunction(e.currentTarget.dataset);
     };
 
-    const renderExchangesList = (arr: [any]) =>
+    const renderExchangesList = (arr: SavedExchange[]) =>
         arr?.map(el => (
             <StyledLi key={el.id}>
                 <div>
