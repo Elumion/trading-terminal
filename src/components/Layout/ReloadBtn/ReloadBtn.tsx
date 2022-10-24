@@ -4,15 +4,15 @@ import { toast } from 'react-toastify';
 import { fetchBalance } from '../../../redux/balanceReducer';
 import { fetchCoins } from '../../../redux/coinsReducer';
 import { fetchExchanges } from '../../../redux/exchangesReducer';
-import { addHandOrders, fetchOrders } from '../../../redux/ordersReducer';
+import { fetchOrders } from '../../../redux/ordersReducer';
+import { RootState, useAppDispatch } from '../../../redux/store';
 import { Reload } from './ReloadBtn.styles';
 
 const ReloadBtn = () => {
     const ccxt = (window as any).ccxt;
-    let kucoin: any = useSelector((state: any) => state.SelectedExchange.data);
-    let coins = useSelector((state: any) => state.coins.data);
+    let kucoin = useSelector((state: RootState) => state.SelectedExchange.data);
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const handleReload = () => {
         dispatch(fetchCoins(kucoin));
         dispatch(fetchBalance(kucoin));
@@ -21,10 +21,7 @@ const ReloadBtn = () => {
     };
 
     const reloadOrders = async (exchange: any) => {
-        exchange.setSandboxMode(true); //=============
-
-        const orders = await exchange.fetchOpenOrders();
-        dispatch(addHandOrders(orders));
+        dispatch(fetchOrders(kucoin));
     };
 
     useEffect(() => {
