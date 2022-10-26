@@ -98,7 +98,7 @@ const FormLogin = () => {
                         <div>
                             <CustomInput
                                 label={'Name'}
-                                handleChange={(value: any) => {
+                                handleChange={(value: string) => {
                                     setFieldValue('name', value);
                                 }}
                                 value={values.name}
@@ -108,7 +108,7 @@ const FormLogin = () => {
                             <CustomInput
                                 isPassword
                                 label={'API Key'}
-                                handleChange={(value: any) => {
+                                handleChange={(value: string) => {
                                     setFieldValue('apiKey', value);
                                 }}
                                 value={values.apiKey}
@@ -118,7 +118,7 @@ const FormLogin = () => {
                             <CustomInput
                                 isPassword
                                 label={'API Secret'}
-                                handleChange={(value: any) => {
+                                handleChange={(value: string) => {
                                     setFieldValue('apiSecret', value);
                                 }}
                                 value={values.apiSecret}
@@ -129,7 +129,7 @@ const FormLogin = () => {
                                 <CustomInput
                                     isPassword
                                     label={'API Password'}
-                                    handleChange={(value: any) => {
+                                    handleChange={(value: string) => {
                                         setFieldValue('password', value);
                                     }}
                                     value={values.password}

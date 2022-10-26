@@ -7,7 +7,11 @@ interface CoinsImages {
     [key: string]: string;
 }
 
-const BalancesList = ({ balancesArray }: any) => {
+interface Props {
+    balancesArray: CustomBalance[];
+}
+
+const BalancesList = ({ balancesArray }: Props) => {
     const imgPopularCoinsObj: CoinsImages = {
         USDT: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
         ETH: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ethereum_logo_2014.svg/1257px-Ethereum_logo_2014.svg.png',
