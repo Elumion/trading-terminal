@@ -156,6 +156,13 @@ export interface ReduxWrapper<T> {
     status: 'fulfilled' | 'rejected' | 'pending';
 }
 
+export interface GlobalExchange {
+    ccxtName: string;
+    name: string;
+    img: string;
+    needPassword: boolean;
+}
+
 // COINS
 // {
 //     id: string;
