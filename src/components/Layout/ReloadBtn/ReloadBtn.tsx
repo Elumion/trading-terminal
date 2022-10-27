@@ -1,6 +1,8 @@
+import { Exchange } from 'ccxt';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { isExchange } from '../../../@typeguards/isExchange';
 import { fetchBalance } from '../../../redux/balanceReducer';
 import { fetchCoins } from '../../../redux/coinsReducer';
 import { fetchExchanges } from '../../../redux/exchangesReducer';
@@ -14,18 +16,22 @@ const ReloadBtn = () => {
 
     const dispatch = useAppDispatch();
     const handleReload = () => {
-        dispatch(fetchCoins(kucoin));
-        dispatch(fetchBalance(kucoin));
-        dispatch(fetchOrders(kucoin));
-        dispatch(fetchExchanges());
+        if (isExchange(kucoin)) {
+            dispatch(fetchCoins(kucoin));
+            dispatch(fetchBalance(kucoin));
+            dispatch(fetchOrders(kucoin));
+            dispatch(fetchExchanges());
+        }
     };
 
-    const reloadOrders = async (exchange: any) => {
-        dispatch(fetchOrders(kucoin));
+    const reloadOrders = async (exchange: Exchange) => {
+        if (isExchange(kucoin)) dispatch(fetchOrders(kucoin));
     };
 
     useEffect(() => {
-        const intervalId = setInterval(() => reloadOrders(kucoin), 120000);
+        const intervalId = setInterval(() => {
+            if (isExchange(kucoin)) reloadOrders(kucoin);
+        }, 120000);
         return () => clearInterval(intervalId);
     }, [kucoin]);
 
