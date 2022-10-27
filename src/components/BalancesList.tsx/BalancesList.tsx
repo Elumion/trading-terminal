@@ -1,3 +1,5 @@
+import { Balance } from 'ccxt';
+import { CustomBalance } from '../../@types/redux.types';
 import numberFormater from '../../logic/numberFormater';
 import { Heading, StyledLi, StyledUl } from './BalancesList.style';
 
@@ -5,14 +7,18 @@ interface CoinsImages {
     [key: string]: string;
 }
 
-const BalancesList = ({ balancesArray }: any) => {
+interface Props {
+    balancesArray: CustomBalance[];
+}
+
+const BalancesList = ({ balancesArray }: Props) => {
     const imgPopularCoinsObj: CoinsImages = {
         USDT: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
         ETH: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ethereum_logo_2014.svg/1257px-Ethereum_logo_2014.svg.png',
         BTC: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
     };
 
-    const renderBalances = (arr: [any]) =>
+    const renderBalances = (arr: CustomBalance[]) =>
         arr?.map(el => (
             <StyledLi key={el.id}>
                 {imgPopularCoinsObj[el.currency] && (
@@ -37,7 +43,7 @@ const BalancesList = ({ balancesArray }: any) => {
                 <p className="available">Available amount</p>
                 <p className="holds">In orders</p>
             </Heading>
-            <StyledUl>
+            <StyledUl className="scroll">
                 {renderBalances(balancesArray) || 'no available balances'}
             </StyledUl>
         </>

@@ -2,18 +2,22 @@ import { InputLabel } from '@mui/material';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
+interface Props {
+    label: string;
+    value: string;
+    isPassword?: boolean;
+    handleChange: (value: string) => void;
+}
+
 export const CustomInput = ({
     label,
     handleChange,
     value,
     isPassword = false,
-}: {
-    label: string;
-    handleChange: any;
-    value: any;
-    isPassword?: boolean;
-}) => {
-    const handleType = (e: any) => {
+}: Props) => {
+    const handleType = (
+        e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    ) => {
         handleChange(e.target.value);
     };
 

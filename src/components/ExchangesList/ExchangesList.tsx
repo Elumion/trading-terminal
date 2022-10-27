@@ -1,44 +1,53 @@
-import { StyledLi, StyledUl } from "./ExchangesList.style";
+import { FormExchange, SavedExchange } from '../../@types/redux.types';
+import { StyledLi, StyledUl } from './ExchangesList.style';
 
-const ExchangesList = ({
-  exchangesArray,
-  editFunction,
-}: {
-  exchangesArray: [any];
-  editFunction: any;
-}) => {
-  const handleClick = (e: any) => {
-    editFunction(e.currentTarget.dataset);
-  };
+interface Props {
+    exchangesArray: SavedExchange[];
+    editFunction: (obj: FormExchange) => void;
+}
 
-  const renderExchangesList = (arr: [any]) =>
-    arr?.map((el) => (
-      <StyledLi key={el.id}>
-        <div>
-          <p>{el.name}</p>
-          <p>{el.exchange}</p>
-        </div>
-        <div>
-          <p>API key: {el.apiKey}</p>
-          <button
-            data-id={el.id}
-            data-name={el.name}
-            data-apikey={el.apiKey}
-            data-secret={el.apiSecret}
-            data-password={el.password}
-            onClick={handleClick}
-          >
-            Change
-          </button>
-        </div>
-      </StyledLi>
-    ));
+const ExchangesList = ({ exchangesArray, editFunction }: Props) => {
+    const handleClick = (e: React.SyntheticEvent<HTMLButtonElement>) => {
+        if (isFormExchange(e.currentTarget.dataset))
+            editFunction(e.currentTarget.dataset);
+    };
 
-  return (
-    <>
-      <StyledUl>{renderExchangesList(exchangesArray)}</StyledUl>
-    </>
-  );
+    const renderExchangesList = (arr: SavedExchange[]) =>
+        arr?.map(el => (
+            <StyledLi key={el.id}>
+                <div>
+                    <p>{el.name}</p>
+                    <p>{el.exchange}</p>
+                </div>
+                <div>
+                    <p>API key: {el.apiKey}</p>
+                    <button
+                        data-id={el.id}
+                        data-name={el.name}
+                        data-apikey={el.apiKey}
+                        data-apisecret={el.apiSecret}
+                        data-password={el.password}
+                        onClick={handleClick}
+                    >
+                        Change
+                    </button>
+                </div>
+            </StyledLi>
+        ));
+
+    return (
+        <>
+            <StyledUl className="scroll">
+                {renderExchangesList(exchangesArray)}
+            </StyledUl>
+        </>
+    );
 };
 
 export default ExchangesList;
+
+function isFormExchange(value: any): value is FormExchange {
+    if (value.apisecret && value.apiSecret && value.apikey && value.apiKey)
+        return true;
+    else return false;
+}

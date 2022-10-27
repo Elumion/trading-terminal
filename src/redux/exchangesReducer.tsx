@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { ReduxWrapper, SavedExchange } from '../@types/redux.types';
 
-export const fetchExchanges: any = createAsyncThunk<any>(
+export const fetchExchanges = createAsyncThunk(
     'exchange/fetchExchanges',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await (window as any).Main.getExchanges();
+            const response = await window.Main.getExchanges();
 
             return response;
         } catch (error: any) {
@@ -13,9 +14,9 @@ export const fetchExchanges: any = createAsyncThunk<any>(
     },
 );
 
-const initialState = {};
+const initialState = {} as ReduxWrapper<SavedExchange[] | []>;
 
-const exchangesSlice: any = createSlice<any, any, any>({
+const exchangesSlice = createSlice({
     name: 'exchanges',
     initialState,
     reducers: {},
@@ -25,7 +26,7 @@ const exchangesSlice: any = createSlice<any, any, any>({
             state.status = 'fulfilled';
         });
         builder.addCase(fetchExchanges.rejected, (state, action) => {
-            state.data = action.payload;
+            state.data = [];
             state.status = 'rejected';
         });
     },

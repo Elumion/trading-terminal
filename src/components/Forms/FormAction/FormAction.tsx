@@ -20,7 +20,9 @@ interface Props {
     limitValue: number;
     action: string;
     available: number;
-    accuracy: { precision: Precision };
+    accuracy: {
+        precision: { amount: number | undefined; price: number | undefined };
+    };
     mode: string;
     fee: Fee;
     handleLimitChange: (value: string | number) => void;
@@ -122,7 +124,7 @@ const FormAction = (actionObj: Props) => {
                 <NumInput
                     disabled={mode === 'market' ? true : false}
                     placeholder={'Limit'}
-                    coin={selectedCoin}
+                    coin={selectedCoin as SelectedCoin}
                     hookValue={limitValue}
                     handleValue={handleLimitChange}
                     accuracy={
@@ -131,7 +133,7 @@ const FormAction = (actionObj: Props) => {
                 />
                 <NumInput
                     placeholder={'Amount'}
-                    coin={selectedCoin}
+                    coin={selectedCoin as SelectedCoin}
                     hookValue={amountValue}
                     handleValue={handleAmountChange}
                     accuracy={

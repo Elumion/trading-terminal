@@ -7,11 +7,19 @@ import {
     HeaderOuterContainer,
     AddExchangeBtn,
     SelectContainer,
+    LayoutContainer,
 } from './Layout.styles';
 import { SelectExchange } from './SelectEcxhange';
-const Layout = ({ children }: any) => {
+import { TopBar } from '../TopBar';
+
+interface Props {
+    children: JSX.Element;
+}
+
+const Layout = ({ children }: Props) => {
     return (
-        <div>
+        <LayoutContainer>
+            <TopBar />
             <Header>
                 <HeaderOuterContainer>
                     <Navigation>
@@ -34,8 +42,8 @@ const Layout = ({ children }: any) => {
                 </HeaderOuterContainer>
                 <ReloadBtn />
             </Header>
-            {children}
-        </div>
+            <div>{children}</div>
+        </LayoutContainer>
     );
 };
 

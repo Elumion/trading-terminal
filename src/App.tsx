@@ -6,14 +6,15 @@ import { Terminal } from './pages/Terminal';
 import * as ccxt from 'ccxt';
 import { Layout } from './components/Layout';
 import { Global } from '@emotion/react';
-import { GlobalStyles } from './Global.styles';
+import { GlobalClasses, GlobalStyles } from './Global.styles';
 import { AddExchange } from './pages/AddExchange';
 import { Notification } from './components/Notification';
 
 function App() {
     return (
         <div className="App">
-            <Global styles={GlobalStyles}></Global>
+            <Global styles={GlobalStyles} />
+            <Global styles={GlobalClasses} />
             <Notification />
             <HashRouter>
                 <Routes>

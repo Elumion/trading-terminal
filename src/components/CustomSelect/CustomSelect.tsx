@@ -5,26 +5,32 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { StyledItem } from './CustomSelect.styles';
+import { GlobalExchange } from '../../@types/redux.types';
 
-const CustomSelect = ({
-    handleChange,
-    value,
-}: {
-    handleChange: any;
-    value: any;
-}) => {
+function isString(value: string | undefined): value is string {
+    return typeof value !== 'undefined';
+}
+
+interface Props {
+    handleChange: (value: string, needPassword: boolean) => void;
+    value: string;
+}
+
+const CustomSelect = ({ handleChange, value }: Props) => {
     const [exchange, setExchange] = React.useState(value);
 
     React.useEffect(() => {
         setExchange(value);
     }, [value]);
 
-    const handleSelect = (event: any) => {
+    const handleSelect = (event: SelectChangeEvent<string>) => {
         setExchange(event.target.value);
         if (event.currentTarget) {
-            const data = event.currentTarget.dataset;
-
-            handleChange(data.value, data.password === 'true');
+            const data = (event.currentTarget as unknown as HTMLInputElement)
+                .dataset;
+            if (isString(data.value)) {
+                handleChange(data.value, data.password === 'true');
+            }
         }
     };
 
@@ -43,14 +49,14 @@ const CustomSelect = ({
         },
     });
 
-    const renderExchanges = (arr: []) =>
-        arr.map((elem: any, index: number) => (
+    const renderExchanges = (arr: GlobalExchange[]) =>
+        arr.map((elem, index: number) => (
             <MenuItem
                 key={index}
                 value={elem.ccxtName}
                 data-password={elem.needPassword}
-                onClick={(event: any) => {
-                    handleSelect(event);
+                onClick={(event: React.SyntheticEvent<HTMLLIElement>) => {
+                    handleSelect(event as unknown as SelectChangeEvent<string>);
                 }}
             >
                 <StyledItem>
@@ -91,9 +97,7 @@ const CustomSelect = ({
                         gap: '5px',
                     }}
                 >
-                    {renderExchanges(
-                        (window as any).Main.globalConfig.exchanges,
-                    )}
+                    {renderExchanges(window.Main.globalConfig.exchanges)}
                 </Select>
             </FormControl>
         </ThemeProvider>

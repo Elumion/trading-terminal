@@ -1,22 +1,29 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { Exchange } from 'ccxt';
+import { ReduxFee, ReduxWrapper } from '../@types/redux.types';
 
-export const fetchFee: any = createAsyncThunk<any, any, any>(
+interface Props {
+    exchange: Exchange;
+    coinName: string;
+}
+
+export const fetchFee = createAsyncThunk(
     'fee/currentCoinFee',
-    async (dataObj: any, { rejectWithValue }) => {
+    async (dataObj: Props, { rejectWithValue }) => {
         try {
             const { exchange, coinName } = dataObj;
             exchange.setSandboxMode(true); //=============
-            const response = await exchange.fetchTradingFee(coinName);
-            return response;
+            const response: ReduxFee = await exchange.fetchTradingFee(coinName);
+            return response as ReduxFee;
         } catch (error: any) {
             return rejectWithValue(error.response);
         }
     },
 );
 
-const initialState = {};
+const initialState = {} as ReduxWrapper<ReduxFee>;
 
-const fetchFeeSlice: any = createSlice<any, any, any>({
+const fetchFeeSlice = createSlice({
     name: 'fee',
     initialState,
     reducers: {},
@@ -26,7 +33,7 @@ const fetchFeeSlice: any = createSlice<any, any, any>({
             state.status = 'fulfilled';
         });
         builder.addCase(fetchFee.rejected, (state, action) => {
-            state.data = action.payload;
+            // state.data = {};
             state.status = 'rejected';
         });
     },
