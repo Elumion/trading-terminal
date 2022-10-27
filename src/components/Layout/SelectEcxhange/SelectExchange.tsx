@@ -10,21 +10,27 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { borderColor } from '@mui/system';
 import { RootState, useAppDispatch } from '../../../redux/store';
+import { SavedExchange } from '../../../@types/redux.types';
 
 const SelectExchange = () => {
     const dispatch = useAppDispatch();
     const exchanges = useSelector(
         (state: RootState) => state.exchanges.data || [],
     );
-    const lastExchange: any = window.localStorage.getItem('lastExchange');
+    const lastExchange: { id: string; name: string } = JSON.parse(
+        window.localStorage.getItem('lastExchange') as string,
+    );
 
-    const [selected, setSelected] = useState(
-        JSON.parse(lastExchange) || { name: '', id: '' },
+    const [selected, setSelected] = useState<{ id: string; name: string }>(
+        lastExchange || {
+            name: '',
+            id: '',
+        },
     );
 
     useEffect(() => {
-        dispatch(fetchExchanges()).then((data: any) => {
-            const exchange = data.payload.filter(
+        dispatch(fetchExchanges()).then(data => {
+            const exchange = (data.payload as SavedExchange[]).filter(
                 (elem: any) => elem.id === selected.id,
             );
             if (exchange[0]) {
@@ -45,7 +51,7 @@ const SelectExchange = () => {
     );
 
     const renderExchanges = () =>
-        exchanges.map((elem: any) => (
+        exchanges?.map(elem => (
             <MenuItem
                 key={elem.id}
                 value={`${elem.name}`}
@@ -56,38 +62,27 @@ const SelectExchange = () => {
             </MenuItem>
         ));
 
-    const handleSelect = (e: any) => {
-        const exchange = exchanges.filter(
-            (elem: any) => elem.id === e.currentTarget.dataset.id,
+    const handleSelect = (e: React.SyntheticEvent<HTMLLIElement>) => {
+        const exchange = exchanges?.filter(
+            elem => elem.id === e.currentTarget.dataset.id,
         )[0];
         dispatch(exchangeSelected(exchange));
-        setSelected({
-            name: e.currentTarget.dataset.value,
-            id: e.currentTarget.dataset.id,
-        });
+        if (e.currentTarget.dataset.value && e.currentTarget.dataset.id)
+            setSelected({
+                name: e.currentTarget.dataset.value,
+                id: e.currentTarget.dataset.id,
+            });
     };
 
     return (
         <>
             <FormControl>
-                {/* <InputLabel
-          id="demo-simple-select-helper-label"
-          sx={{
-            backgroundColor: "#fff",
-            padding: "0 3px",
-            borderRadius: "4px",
-            transform: "translate(10px,5px)",
-          }}
-        >
-          Exchange
-        </InputLabel> */}
                 <Select
                     disabled={!exchanges.length}
                     labelId="demo-simple-select-helper-label"
                     id="demo-simple-select-helper"
                     value={selected.name}
                     label="Exchange"
-                    // onChange={handleSelect}
                     sx={{
                         m: 0,
                         minWidth: 200,

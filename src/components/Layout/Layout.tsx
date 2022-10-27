@@ -11,7 +11,12 @@ import {
 } from './Layout.styles';
 import { SelectExchange } from './SelectEcxhange';
 import { TopBar } from '../TopBar';
-const Layout = ({ children }: any) => {
+
+interface Props {
+    children: JSX.Element;
+}
+
+const Layout = ({ children }: Props) => {
     return (
         <LayoutContainer>
             <TopBar />

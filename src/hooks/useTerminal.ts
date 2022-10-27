@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { isExchange } from '../@typeguards/isExchange';
 import { StoreInterface } from '../@types/redux.types';
 import { isNotValidFormAction } from '../components/Forms/FormAction/validate';
 import { fetchBalance } from '../redux/balanceReducer';
@@ -23,16 +24,17 @@ export const useTerminal = () => {
         state.selectedCoin.data ? state.selectedCoin.data : null,
     );
 
-    const [accuracy, setAccuracy] = useState({
+    const [accuracy, setAccuracy] = useState<{
+        precision: { price: number | undefined; amount: number | undefined };
+    }>({
         precision: { price: 11, amount: 11 },
     });
 
-    const [amountValue, setAmountValue]: [any, any] = useState('');
-    const [limitValue, setLimitValue]: [any, any] = useState('');
+    const [amountValue, setAmountValue] = useState<string | number>('');
+    const [limitValue, setLimitValue] = useState<string | number>('');
 
-    const [available, setAvailable]: [any, any] = useState(0);
-    const [valid, setValid]: [string | boolean, any] =
-        useState('Please select coin');
+    const [available, setAvailable] = useState<number>(0);
+    const [valid, setValid] = useState<string | boolean>('Please select coin');
 
     let fee = useSelector((state: RootState) =>
         state.fee.data ? state.fee.data : { maker: 0, taker: 0 },
@@ -47,14 +49,16 @@ export const useTerminal = () => {
     const [action, setAction] = useState<'buy' | 'sell'>('buy');
 
     useEffect(() => {
-        dispatch(fetchBalance(kucoin));
-        dispatch(fetchCoins(kucoin));
-        dispatch(fetchOrders(kucoin));
+        if (isExchange(kucoin)) {
+            dispatch(fetchBalance(kucoin));
+            dispatch(fetchCoins(kucoin));
+            dispatch(fetchOrders(kucoin));
+        }
     }, [kucoin]);
 
     useEffect(() => {
         const handleBalance = () => {
-            let result: any;
+            let result;
             if (balance && selectedCoin) {
                 let currency =
                     action === 'buy' ? selectedCoin.limit : selectedCoin.amount;
@@ -67,11 +71,11 @@ export const useTerminal = () => {
     }, [action, balance, selectedCoin]);
 
     useEffect(() => {
-        dispatch(fetchOrders(kucoin));
+        if (isExchange(kucoin)) dispatch(fetchOrders(kucoin));
     }, [balance]);
 
     useEffect(() => {
-        isNotValidFormAction(mode, amountValue, limitValue, setValid);
+        isNotValidFormAction(mode, +amountValue, +limitValue, setValid);
     }, [amountValue, limitValue, mode]);
 
     return {

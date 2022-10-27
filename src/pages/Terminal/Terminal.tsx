@@ -1,8 +1,10 @@
+import { Market } from 'ccxt';
 import { isString } from 'formik';
 import { stat } from 'fs';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { isExchange } from '../../@typeguards/isExchange';
 import { CoinsList } from '../../components/CoinsList';
 import { FormAction } from '../../components/Forms/FormAction/';
 import { isNotValidFormAction } from '../../components/Forms/FormAction/validate';
@@ -15,6 +17,7 @@ import { fetchOrders } from '../../redux/ordersReducer';
 import { coinSelected } from '../../redux/selectCoinReducer';
 import { store } from '../../redux/store';
 import { TerminalContainer } from './Terminal.style';
+
 const Terminal = () => {
     const ccxt = (window as any).ccxt;
     const {
@@ -53,12 +56,16 @@ const Terminal = () => {
     const handleClick = (value: string) => {
         const splittedValue = value.split('/');
         dispatch(coinSelected(value));
-        dispatch(fetchFee({ exchange: kucoin, coinName: value }));
-        let accuracy: any;
+        if (isExchange(kucoin))
+            dispatch(fetchFee({ exchange: kucoin, coinName: value }));
+        let accuracy: Market;
         for (let key of coins) {
-            if (key.symbol === value) accuracy = key;
+            if (key.symbol === value) {
+                accuracy = key;
+                setAccuracy(accuracy);
+                break;
+            }
         }
-        setAccuracy(accuracy);
     };
 
     const toggleAction = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -67,32 +74,39 @@ const Terminal = () => {
     };
 
     const handleAction = (e: React.SyntheticEvent) => {
+        //When mode market data doesn't fetch, need to fix imidiately
         e.preventDefault();
-        isNotValidFormAction(mode, amountValue, limitValue, setValid);
+        isNotValidFormAction(mode, +amountValue, +limitValue, setValid);
         if (!selectedCoin) return toast.error('Please select coin!');
         if (isString(valid)) return toast.error(valid);
-
-        // kucoin.setSandboxMode(true); //=========================
+        if (isExchange(kucoin)) kucoin.setSandboxMode(true); //=========================
         const actionCoin: string = `${selectedCoin.amount}/${selectedCoin.limit}`;
         const limitUpMode = mode === 'limit' ? limitValue : undefined;
-
-        kucoin
-            .createOrder(actionCoin, mode, action, amountValue, limitUpMode)
-            .then((data: any) => {
-                dispatch(fetchBalance(kucoin));
-                toast.success('Success!');
-            }) // fullified => fetchOrders
-            .catch((res: any) => {
-                toast.error(res.message);
-            });
+        if (isExchange(kucoin) && limitUpMode)
+            kucoin
+                .createOrder(
+                    actionCoin,
+                    mode,
+                    action,
+                    +amountValue,
+                    +limitUpMode,
+                )
+                .then(data => {
+                    dispatch(fetchBalance(kucoin));
+                    toast.success('Success!');
+                }) // fullified => fetchOrders
+                .catch(res => {
+                    toast.error(res.message);
+                });
     };
 
     const cancelOrder = (orderId: string, symbol: string) => {
         // kucoin.setSandboxMode(true); //=========================
-        kucoin.cancelOrder(orderId, symbol).then((res: any) => {
-            dispatch(fetchBalance(kucoin));
-            dispatch(fetchOrders(kucoin));
-        });
+        if (isExchange(kucoin))
+            kucoin.cancelOrder(orderId, symbol).then(res => {
+                dispatch(fetchBalance(kucoin));
+                dispatch(fetchOrders(kucoin));
+            });
     };
 
     return (
@@ -100,9 +114,9 @@ const Terminal = () => {
             <CoinsList coins={coins} selectCoin={handleClick} />
             <FormAction
                 selectedCoin={selectedCoin}
-                amountValue={amountValue}
+                amountValue={+amountValue}
                 handleAmountChange={handleAmountChange}
-                limitValue={limitValue}
+                limitValue={+limitValue}
                 handleLimitChange={handleLimitChange}
                 handleAction={handleAction}
                 toggleAction={toggleAction}

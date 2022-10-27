@@ -1,9 +1,27 @@
+import { Order } from 'ccxt';
 import { OrdersContainer, OrdersItem } from './OrdersList.styles';
 
-const OrdersList = ({ ordersArray, cancelFunction }: any) => {
+type LiteralDateOption = 'numeric' | '2-digit' | undefined;
+type LiteralHourOption = 'h24' | 'h11' | 'h12' | 'h23' | undefined;
+interface OptionsDate {
+    year: LiteralDateOption;
+    month: LiteralDateOption;
+    day: LiteralDateOption;
+    hour: LiteralDateOption;
+    minute: LiteralDateOption;
+    second: LiteralDateOption;
+    hourCycle: LiteralHourOption;
+}
+
+interface Props {
+    ordersArray: Order[];
+    cancelFunction: (orderId: string, symbol: string) => void;
+}
+
+const OrdersList = ({ ordersArray, cancelFunction }: Props) => {
     const renderDate = (date: string) => {
         const newDate = new Date(date);
-        const options: any = {
+        const options: OptionsDate = {
             year: 'numeric',
             month: 'numeric',
             day: 'numeric',
@@ -15,14 +33,15 @@ const OrdersList = ({ ordersArray, cancelFunction }: any) => {
         return newDate.toLocaleString('en-US', options).toString();
     };
 
-    const handleClick = (e: any) => {
-        const key = e.target.parentElement.dataset.key;
-        const symbol = e.target.parentElement.dataset.sybmol;
-        cancelFunction(key, symbol);
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const key = (e.target as HTMLButtonElement).parentElement?.dataset.key;
+        const symbol = (e.target as HTMLButtonElement).parentElement?.dataset
+            .sybmol;
+        cancelFunction(`${key}`, `${symbol}`);
     };
 
     const renderOrders = () =>
-        ordersArray.map((elem: any) => {
+        ordersArray.map(elem => {
             const splittedSymbol = elem.symbol.split('/');
 
             return (
