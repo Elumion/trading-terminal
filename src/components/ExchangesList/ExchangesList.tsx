@@ -1,15 +1,15 @@
-import { SavedExchange } from '../../@types/redux.types';
+import { FormExchange, SavedExchange } from '../../@types/redux.types';
 import { StyledLi, StyledUl } from './ExchangesList.style';
 
-const ExchangesList = ({
-    exchangesArray,
-    editFunction,
-}: {
+interface Props {
     exchangesArray: SavedExchange[];
-    editFunction: any;
-}) => {
-    const handleClick = (e: any) => {
-        editFunction(e.currentTarget.dataset);
+    editFunction: (obj: FormExchange) => void;
+}
+
+const ExchangesList = ({ exchangesArray, editFunction }: Props) => {
+    const handleClick = (e: React.SyntheticEvent<HTMLButtonElement>) => {
+        if (isFormExchange(e.currentTarget.dataset))
+            editFunction(e.currentTarget.dataset);
     };
 
     const renderExchangesList = (arr: SavedExchange[]) =>
@@ -45,3 +45,9 @@ const ExchangesList = ({
 };
 
 export default ExchangesList;
+
+function isFormExchange(value: any): value is FormExchange {
+    if (value.apisecret && value.apiSecret && value.apikey && value.apiKey)
+        return true;
+    else return false;
+}
