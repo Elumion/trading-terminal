@@ -1,30 +1,8 @@
-import { Balance, Balances, Exchange, Market } from 'ccxt';
+import { Balance, Balances, Exchange, Market, Order } from 'ccxt';
 
 export interface StoreInterface {
     balance: {
-        data: {
-            info: {
-                code: string;
-                data: {
-                    [key: number]: Balance;
-                };
-            };
-            used: {
-                [key: string]: number;
-            };
-            total: {
-                [key: string]: number;
-            };
-            free: {
-                [key: string]: number;
-            };
-        } & {
-            [key: string]: {
-                free: number;
-                used: number;
-                total: number;
-            };
-        };
+        data: Balances;
         status: string;
     };
     coins: {
@@ -33,74 +11,14 @@ export interface StoreInterface {
         status: string;
     };
     selectedCoin: {
-        data: {
-            limit: string;
-            amount: string;
-        };
+        data: SelectedCoin;
     };
     fee: {
         data: ReduxFee;
         status: string;
     };
     orders: {
-        data: {
-            id: string;
-            clientOrderId: string;
-            symbol: string;
-            type: string;
-            timeInForce: string;
-            postOnly: boolean;
-            side: string;
-            amount: number;
-            price: number;
-            stopPrice: number;
-            cost: number;
-            filled: number;
-            remaining: number;
-            timestamp: number;
-            datetime: string;
-            fee: {
-                currency: string;
-                cost: number;
-            };
-            status: string;
-            info: {
-                id: string;
-                symbol: string;
-                opType: string;
-                type: string;
-                side: string;
-                price: string;
-                size: string;
-                funds: string;
-                dealFunds: string;
-                dealSize: string;
-                fee: string;
-                feeCurrency: string;
-                stp: string;
-                stop: string;
-                stopPrice: string;
-                timeInForce: string;
-                postOnly: boolean;
-                hiden: boolean;
-                iceberg: boolean;
-                visibleSize: string;
-                cancelAfter: number;
-                channel: string;
-                clientOid: string;
-                remark: null;
-                tags: null;
-                isActive: boolean;
-                cancelExist: boolean;
-                createdAt: Date;
-                tradeType: string;
-            };
-            trades: any[];
-            fees: {
-                currency: string;
-                cost: number;
-            }[];
-        }[];
+        data: Order[];
         status: string;
     };
     exchanges: {
@@ -139,7 +57,7 @@ export interface SavedExchange {
     apiKey: string;
     apiSecret: string;
     password: string;
-    needPassword: true;
+    needPassword: boolean;
 }
 
 export type CustomBalance = {
@@ -161,6 +79,20 @@ export interface GlobalExchange {
     name: string;
     img: string;
     needPassword: boolean;
+}
+export interface FormExchange {
+    name: string;
+    apiKey: string;
+    apiSecret: string;
+    password: string;
+    apisecret?: string;
+    apikey?: string;
+    id?: string;
+}
+
+export interface SelectedCoin {
+    limit: string;
+    amount: string;
 }
 
 // COINS
