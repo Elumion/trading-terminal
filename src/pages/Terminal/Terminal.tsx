@@ -81,8 +81,8 @@ const Terminal = () => {
         if (isString(valid)) return toast.error(valid);
         if (isExchange(kucoin)) kucoin.setSandboxMode(true); //=========================
         const actionCoin: string = `${selectedCoin.amount}/${selectedCoin.limit}`;
-        const limitUpMode = mode === 'limit' ? limitValue : undefined;
-        if (isExchange(kucoin) && limitUpMode)
+        const limitUpMode = mode === 'limit' ? limitValue : '';
+        if (isExchange(kucoin)) {
             kucoin
                 .createOrder(
                     actionCoin,
@@ -98,6 +98,7 @@ const Terminal = () => {
                 .catch(res => {
                     toast.error(res.message);
                 });
+        }
     };
 
     const cancelOrder = (orderId: string, symbol: string) => {
