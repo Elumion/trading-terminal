@@ -1,0 +1,10 @@
+version: 2.1:
+    DONE:  
+        - Cors server now creates localy and no need to change the global-config file for proxy
+        - Created top bar for better look and design
+        - Add some animation to reload button, now it looks not so bad
+        - Inputs for important information now changes to "*" to be secured from others only when you add new exchange
+    IN PROGRESS:
+        - Another styles for switch buy/sell button
+        - Page for settings where user can change theme
+        - Refactor to last React Router system
