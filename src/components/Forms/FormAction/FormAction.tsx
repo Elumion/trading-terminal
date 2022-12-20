@@ -27,7 +27,7 @@ interface Props {
     fee: Fee;
     handleLimitChange: (value: string | number) => void;
     handleAction: (e: React.SyntheticEvent) => void;
-    toggleAction: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    changeAction: (e: React.MouseEvent<HTMLButtonElement>) => void;
     handleModeChange: (value: string) => void;
     handleAmountChange: (value: string | number) => void;
 }
@@ -40,7 +40,7 @@ const FormAction = (actionObj: Props) => {
         limitValue,
         handleLimitChange,
         handleAction,
-        toggleAction,
+        changeAction,
         action,
         available,
         accuracy,
@@ -105,15 +105,10 @@ const FormAction = (actionObj: Props) => {
 
     return (
         <StyledForm onSubmit={handleAction}>
-            <label className="switchContainer">
-                <SwitchButton onClick={toggleAction}>
-                    {action[0].toUpperCase() + action.substr(1)}
-                </SwitchButton>
-                <p>
-                    {'<-'}Click
-                    <br /> to switch mode
-                </p>
-            </label>
+            <div className={`switchContainer active-${action}`}>
+                <button onClick={changeAction}>buy</button>
+                <button onClick={changeAction}>sell</button>
+            </div>
             <ModesContainer>
                 <p onClick={changeMode} className={'chosed'}>
                     Limit
@@ -164,8 +159,8 @@ const FormAction = (actionObj: Props) => {
                 </div>
             </PricesContainer>
             <ActionButton className={action} type="submit">
-                {`${action[0].toUpperCase()}${action.substr(1)}`}
-                {selectedCoin ? ' ' + selectedCoin.amount : null}
+                {`${action[0].toUpperCase()}${action.slice(1)}`}
+                {selectedCoin?.amount ? ' ' + selectedCoin.amount : null}
             </ActionButton>
         </StyledForm>
     );
