@@ -8,7 +8,6 @@ interface Props {
 
 const ExchangesList = ({ exchangesArray, editFunction }: Props) => {
     const handleClick = (e: React.SyntheticEvent<HTMLButtonElement>) => {
-        // console.log(e.currentTarget.dataset);
         if (isFormExchange(e.currentTarget.dataset)) {
             editFunction(e.currentTarget.dataset);
         }
