@@ -43,7 +43,7 @@ export const StyledUl = styled.ul`
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding: 0 10px;
+    padding: 10px;
     overflow-y: scroll;
     max-height: 92vh;
 `;

@@ -44,7 +44,8 @@ export const GlobalStyles = css`
 `;
 
 export const GlobalClasses = css`
-    .scroll {
+    .scroll,
+    body {
         ::-webkit-scrollbar-track {
             border: 1px solid transparent;
             padding: 2px 0;

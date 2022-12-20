@@ -8,8 +8,9 @@ interface Props {
 
 const ExchangesList = ({ exchangesArray, editFunction }: Props) => {
     const handleClick = (e: React.SyntheticEvent<HTMLButtonElement>) => {
-        if (isFormExchange(e.currentTarget.dataset))
+        if (isFormExchange(e.currentTarget.dataset)) {
             editFunction(e.currentTarget.dataset);
+        }
     };
 
     const renderExchangesList = (arr: SavedExchange[]) =>
@@ -47,7 +48,6 @@ const ExchangesList = ({ exchangesArray, editFunction }: Props) => {
 export default ExchangesList;
 
 function isFormExchange(value: any): value is FormExchange {
-    if (value.apisecret && value.apiSecret && value.apikey && value.apiKey)
-        return true;
+    if (value.apisecret && value.apikey) return true;
     else return false;
 }

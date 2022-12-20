@@ -13,6 +13,7 @@ export const TopBarContainer = styled.div`
     padding-left: 15px;
     display: flex;
     justify-content: space-between;
+    background-color: #131313;
     .buttons__container {
         -webkit-app-region: no-drag;
         display: flex;

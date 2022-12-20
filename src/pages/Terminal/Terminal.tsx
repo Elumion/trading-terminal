@@ -68,9 +68,10 @@ const Terminal = () => {
         }
     };
 
-    const toggleAction = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const changeAction = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const target = e.target as HTMLButtonElement;
         e.preventDefault();
-        action === 'buy' ? setAction('sell') : setAction('buy');
+        setAction(target.innerText.toLocaleLowerCase() as 'sell' | 'buy');
     };
 
     const handleAction = (e: React.SyntheticEvent) => {
@@ -120,7 +121,7 @@ const Terminal = () => {
                 limitValue={+limitValue}
                 handleLimitChange={handleLimitChange}
                 handleAction={handleAction}
-                toggleAction={toggleAction}
+                changeAction={changeAction}
                 action={action}
                 available={available}
                 accuracy={accuracy}
