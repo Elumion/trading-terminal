@@ -80,7 +80,7 @@ const Terminal = () => {
         isNotValidFormAction(mode, +amountValue, +limitValue, setValid);
         if (!selectedCoin) return toast.error('Please select coin!');
         if (isString(valid)) return toast.error(valid);
-        if (isExchange(kucoin)) kucoin.setSandboxMode(true); //=========================
+        // if (isExchange(kucoin)) kucoin.setSandboxMode(true); //=========================
         const actionCoin: string = `${selectedCoin.amount}/${selectedCoin.limit}`;
         const limitUpMode = mode === 'limit' ? limitValue : '';
         if (isExchange(kucoin)) {
@@ -116,9 +116,9 @@ const Terminal = () => {
             <CoinsList coins={coins} selectCoin={handleClick} />
             <FormAction
                 selectedCoin={selectedCoin}
-                amountValue={+amountValue}
+                amountValue={amountValue}
                 handleAmountChange={handleAmountChange}
-                limitValue={+limitValue}
+                limitValue={limitValue}
                 handleLimitChange={handleLimitChange}
                 handleAction={handleAction}
                 changeAction={changeAction}

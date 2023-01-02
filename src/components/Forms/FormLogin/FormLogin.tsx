@@ -52,7 +52,7 @@ const FormLogin = () => {
 
                 let exchangeIsAlive: boolean;
 
-                newExchange.setSandboxMode(true); //====================
+                // newExchange.setSandboxMode(true); //====================
                 newExchange
                     .fetchBalance()
                     .then(res => (exchangeIsAlive = true))

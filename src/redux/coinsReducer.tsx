@@ -6,7 +6,7 @@ export const fetchCoins = createAsyncThunk(
     'coins/fetchCoins',
     async (exchange: Exchange, { rejectWithValue }) => {
         try {
-            exchange.setSandboxMode(true); //=============
+            // exchange.setSandboxMode(true); //=============
             const response = await exchange.fetchMarkets();
             return response as Market[];
         } catch (error: any) {
