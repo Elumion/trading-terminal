@@ -4,8 +4,8 @@ version: 2.1:
         - Created top bar for better look and design
         - Add some animation to reload button, now it looks not so bad
         - Inputs for important information now changes to "*" to be secured from others only when you add new exchange
-    IN PROGRESS:
         - Another styles for switch buy/sell button
+    IN PROGRESS:
         - Page for settings where user can change theme
         - Refactor to last React Router system
         - Add more animations 
