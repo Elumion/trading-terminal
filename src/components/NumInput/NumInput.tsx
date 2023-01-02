@@ -9,7 +9,7 @@ import {
 interface Props {
     placeholder: string;
     coin: SelectedCoin | {};
-    hookValue: number;
+    hookValue: number | string;
     accuracy: number | undefined;
     disabled?: boolean;
     handleValue: (value: string | number) => void;
@@ -41,7 +41,8 @@ const NumInput = ({
     };
 
     useEffect(() => {
-        if (isNaN(+localValue)) handleValue(+hookValue.toFixed(accuracy));
+        if (isNaN(+localValue))
+            handleValue(+(hookValue as number).toFixed(accuracy));
         else if (!isNaN(+localValue))
             handleValue((+localValue).toFixed(accuracy));
     }, [localValue]);

@@ -6,7 +6,7 @@ export const fetchOrders = createAsyncThunk(
     'orders/fetchOrders',
     async (exchange: Exchange, { rejectWithValue }) => {
         try {
-            exchange.setSandboxMode(true); //=============
+            // exchange.setSandboxMode(true); //=============
             const response = await exchange.fetchOpenOrders();
             return response as Order[];
         } catch (error: any) {

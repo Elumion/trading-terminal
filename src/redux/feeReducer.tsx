@@ -12,7 +12,7 @@ export const fetchFee = createAsyncThunk(
     async (dataObj: Props, { rejectWithValue }) => {
         try {
             const { exchange, coinName } = dataObj;
-            exchange.setSandboxMode(true); //=============
+            // exchange.setSandboxMode(true); //=============
             const response: ReduxFee = await exchange.fetchTradingFee(coinName);
             return response as ReduxFee;
         } catch (error: any) {

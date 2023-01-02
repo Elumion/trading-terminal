@@ -86,7 +86,7 @@ const Exchanges = () => {
                 proxy: window.Main.globalConfig.proxy,
             });
         }
-        newExchange.setSandboxMode(true); //==============================
+        // newExchange.setSandboxMode(true); //==============================
         newExchange
             .fetchBalance()
             .then(data => {

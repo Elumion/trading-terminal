@@ -16,8 +16,8 @@ import { Fee, Precision, SelectedCoin } from '../../../@types/coin';
 
 interface Props {
     selectedCoin: SelectedCoin | null;
-    amountValue: number;
-    limitValue: number;
+    amountValue: number | string;
+    limitValue: number | string;
     action: string;
     available: number;
     accuracy: {
@@ -55,7 +55,7 @@ const FormAction = (actionObj: Props) => {
         } else return null;
     };
     const defineVolume = () =>
-        amountValue && limitValue ? +(amountValue * limitValue) : 0;
+        amountValue && limitValue ? +(+amountValue * +limitValue) : 0;
 
     const handleProcentClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -66,10 +66,10 @@ const FormAction = (actionObj: Props) => {
             if (limitValue) {
                 if (procent === 1) {
                     const subFee = available * fee.maker;
-                    amountResult = available / limitValue;
+                    amountResult = available / +limitValue;
                     amountResult = amountResult - amountResult * fee.maker;
                 } else {
-                    amountResult = (procent * available) / limitValue;
+                    amountResult = (procent * available) / +limitValue;
                 }
             } else amountResult = 0;
         } else if (mode === 'market') {
