@@ -1,18 +1,21 @@
+import { Exchange } from 'ccxt';
 import { Formik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import { FormExchange, SavedExchange } from '../../../@types/redux.types';
 import { fetchExchanges } from '../../../redux/exchangesReducer';
+import { useAppDispatch } from '../../../redux/store';
 import { CustomInput } from '../../CustomInput';
 import { CustomSelect } from '../../CustomSelect';
 import { FormContainer } from './FormLogin.styles';
 import schema from './validationSchema';
 
 const FormLogin = () => {
-    const showErrors = (errorsObj: any) => {
-        const error: any = Object.values(errorsObj)[0];
+    const showErrors = (errorsObj: { [key: string]: string }) => {
+        const error = Object.values(errorsObj)[0];
         toast.error(error);
     };
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     return (
         <Formik
@@ -25,22 +28,22 @@ const FormLogin = () => {
                 needPassword: false,
             }}
             validationSchema={schema}
-            onSubmit={async (values: any, { resetForm }) => {
+            onSubmit={async (values, { resetForm }) => {
                 const ccxt = (window as any).ccxt;
 
-                let newExchange: any;
+                let newExchange: Exchange;
                 if (values.needPassword) {
                     newExchange = new ccxt[values.exchange]({
                         apiKey: values.apiKey,
                         secret: values.apiSecret,
                         password: values.password,
-                        proxy: (window as any).Main.globalConfig.proxy,
+                        proxy: window.Main.globalConfig.proxy,
                     });
                 } else {
                     newExchange = new ccxt[values.exchange]({
                         apiKey: values.apiKey,
                         secret: values.apiSecret,
-                        proxy: (window as any).Main.globalConfig.proxy,
+                        proxy: window.Main.globalConfig.proxy,
                     });
                 }
 
@@ -52,19 +55,19 @@ const FormLogin = () => {
                 // newExchange.setSandboxMode(true); //====================
                 newExchange
                     .fetchBalance()
-                    .then((res: any) => (exchangeIsAlive = true))
-                    .catch((res: any) => {
+                    .then(res => (exchangeIsAlive = true))
+                    .catch(res => {
                         exchangeIsAlive = false;
                         toast.error(res.message);
                     })
                     .then(() => {
                         if (exchangeIsAlive) {
-                            (window as any).Main.addExchange({
-                                id: generateUniqueId(),
+                            window.Main.addExchange({
                                 ...values,
+                                id: generateUniqueId(),
                             });
 
-                            resetForm({ values: '' });
+                            resetForm({ values });
                             dispatch(fetchExchanges());
                             toast.success('Add exchange success!');
                         }
@@ -97,7 +100,7 @@ const FormLogin = () => {
                         <div>
                             <CustomInput
                                 label={'Name'}
-                                handleChange={(value: any) => {
+                                handleChange={(value: string) => {
                                     setFieldValue('name', value);
                                 }}
                                 value={values.name}
@@ -105,8 +108,9 @@ const FormLogin = () => {
                         </div>
                         <div>
                             <CustomInput
+                                isPassword
                                 label={'API Key'}
-                                handleChange={(value: any) => {
+                                handleChange={(value: string) => {
                                     setFieldValue('apiKey', value);
                                 }}
                                 value={values.apiKey}
@@ -114,8 +118,9 @@ const FormLogin = () => {
                         </div>
                         <div>
                             <CustomInput
+                                isPassword
                                 label={'API Secret'}
-                                handleChange={(value: any) => {
+                                handleChange={(value: string) => {
                                     setFieldValue('apiSecret', value);
                                 }}
                                 value={values.apiSecret}
@@ -124,8 +129,9 @@ const FormLogin = () => {
                         {values.needPassword && (
                             <div>
                                 <CustomInput
+                                    isPassword
                                     label={'API Password'}
-                                    handleChange={(value: any) => {
+                                    handleChange={(value: string) => {
                                         setFieldValue('password', value);
                                     }}
                                     value={values.password}

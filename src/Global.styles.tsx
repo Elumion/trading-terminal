@@ -42,3 +42,26 @@ export const GlobalStyles = css`
         text-decoration: none;
     }
 `;
+
+export const GlobalClasses = css`
+    .scroll,
+    body {
+        ::-webkit-scrollbar-track {
+            border: 1px solid transparent;
+            padding: 2px 0;
+            background-color: transparent;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            background-color: #f1f1f1;
+            border: 1px solid #f1f1f1;
+            transform: rotate(180deg);
+        }
+    }
+`;

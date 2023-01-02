@@ -1,8 +1,8 @@
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { globalConfig } from './global_config';
-import fs from 'fs';
-
 import { createCors } from './cors';
+import installExtension, { REDUX_DEVTOOLS } from 'electron-devtools-installer';
+import fs from 'fs';
 
 if (!fs.existsSync('global_config.json')) {
     fs.writeFileSync(
@@ -33,10 +33,14 @@ function createWindow() {
         minHeight: height,
         backgroundColor: '#2e2e2e',
         title: 'Trading terminal',
+        frame: false,
+        titleBarStyle: 'customButtonsOnHover',
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
             preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+            enableRemoteModule: true,
+            // preload: assetsPath.join(app.getAppPath(), 'preload.js'),
         },
     });
 
@@ -47,6 +51,9 @@ function createWindow() {
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
+
+    mainWindow.center();
+    mainWindow.maximize();
 }
 
 async function registerListeners() {
@@ -61,6 +68,11 @@ async function registerListeners() {
 app.on('ready', createWindow)
     .whenReady()
     .then(registerListeners)
+    .then(() => {
+        installExtension(REDUX_DEVTOOLS)
+            .then(name => console.log(`Added Extension:  ${name}`))
+            .catch(err => console.log('An error occurred: ', err));
+    })
     .catch(e => console.error(e));
 
 app.on('window-all-closed', () => {

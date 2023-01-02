@@ -1,33 +1,23 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { Exchange, Order } from 'ccxt';
+import { ReduxWrapper } from '../@types/redux.types';
 
-export const fetchOrders: any = createAsyncThunk<any>(
+export const fetchOrders = createAsyncThunk(
     'orders/fetchOrders',
-    async (exchange: any, { rejectWithValue }) => {
+    async (exchange: Exchange, { rejectWithValue }) => {
         try {
             // exchange.setSandboxMode(true); //=============
             const response = await exchange.fetchOpenOrders();
-            return response;
+            return response as Order[];
         } catch (error: any) {
             return rejectWithValue(error.response.data);
         }
     },
 );
 
-export const addHandOrders: any = createAsyncThunk<any>(
-    'orders/addOrders',
-    async (orders, { rejectWithValue }) => {
-        try {
-            // exchange.setSandboxMode(true); //=============
-            return orders;
-        } catch (error: any) {
-            return rejectWithValue(error.response.data);
-        }
-    },
-);
+const initialState = {} as ReduxWrapper<Order[] | []>;
 
-const initialState = {};
-
-const ordersSlice: any = createSlice<any, any, any>({
+const ordersSlice = createSlice({
     name: 'orders',
     initialState,
     reducers: {},
@@ -37,15 +27,7 @@ const ordersSlice: any = createSlice<any, any, any>({
             state.status = 'fulfilled';
         });
         builder.addCase(fetchOrders.rejected, (state, action) => {
-            state.data = action.payload;
-            state.status = 'rejected';
-        });
-        builder.addCase(addHandOrders.fulfilled, (state, action) => {
-            state.data = action.payload;
-            state.status = 'fulfilled';
-        });
-        builder.addCase(addHandOrders.rejected, (state, action) => {
-            state.data = action.payload;
+            state.data = [];
             state.status = 'rejected';
         });
     },

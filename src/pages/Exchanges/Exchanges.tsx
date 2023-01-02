@@ -11,28 +11,33 @@ import {
     exchangeSelected,
     resetSelectedExchange,
 } from '../../redux/selectedExchangeReducer';
+import { RootState, useAppDispatch } from '../../redux/store';
+import { Exchange } from 'ccxt';
+import { FormExchange, SavedExchange } from '../../@types/redux.types';
 
 const Exchanges = () => {
-    const exchanges: any = useSelector((state: any) => state.exchanges.data);
-    const selectedId = useSelector((state: any) => state.SelectedExchange.id);
-    const [open, setOpen]: [boolean, any] = useState(false);
+    const exchanges = useSelector((state: RootState) => state.exchanges.data);
+    const selectedId = useSelector(
+        (state: RootState) => state.SelectedExchange.id,
+    );
+    const [open, setOpen] = useState<boolean>(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(fetchExchanges());
-    }, []);
+    }, [open]);
 
-    const [editObj, setEditObj]: any = useState({
+    const [editObj, setEditObj] = useState<FormExchange>({
         name: '',
         apiKey: '',
         apiSecret: '',
         password: '',
     });
 
-    const handleEdit = (obj: any = {}) => {
+    const handleEdit = (obj: FormExchange) => {
         handleOpen();
         setEditObj(obj);
     };
@@ -55,46 +60,46 @@ const Exchanges = () => {
     };
 
     const handleSubmit = () => {
-        const editingExchange = exchanges.filter(
-            (el: any) => el.id === editObj.id,
+        const editingExchange = exchanges?.filter(
+            el => el.id === editObj.id,
         )[0];
 
         const validateExchange = {
             ...editingExchange,
             ...editObj,
             apiKey: editObj.apikey,
+            apiSecret: editObj.apisecret,
         };
-        let newExchange: any;
+        let newExchange: Exchange;
         const ccxt = (window as any).ccxt;
         if (validateExchange.needPassword) {
             newExchange = new ccxt[`${validateExchange.exchange}`]({
                 apiKey: validateExchange.apiKey,
                 secret: validateExchange.apiSecret,
                 password: validateExchange.password,
-                proxy: (window as any).Main.globalConfig.proxy,
+                proxy: window.Main.globalConfig.proxy,
             });
         } else {
             newExchange = new ccxt[`${validateExchange.exchange}`]({
                 apiKey: validateExchange.apiKey,
-                secret: validateExchange.apiSecret,
-                proxy: (window as any).Main.globalConfig.proxy,
+                apiSecret: validateExchange.apiSecret,
+                proxy: window.Main.globalConfig.proxy,
             });
         }
         // newExchange.setSandboxMode(true); //==============================
         newExchange
             .fetchBalance()
-            .then((data: any) => {
-                (window as any).Main.editExchange(editObj);
+            .then(data => {
+                window.Main.editExchange(validateExchange as SavedExchange);
                 setOpen(false);
                 toast.success('Exchange changed!');
             })
-            .then(dispatch(exchangeSelected(newExchange)))
-            .catch((err: any) => toast.error(err.message));
-        dispatch(fetchExchanges());
+            .then(data => dispatch(exchangeSelected(newExchange)))
+            .catch((err: Error) => toast.error(err.message));
     };
 
     const handleDelete = () => {
-        (window as any).Main.deleteExchange({ id: editObj.id });
+        window.Main.deleteExchange({ id: editObj.id as string });
         if (selectedId === editObj.id) {
             dispatch(resetSelectedExchange());
         }
@@ -128,14 +133,14 @@ const Exchanges = () => {
                             handleObjChange(value, 'apikey');
                         }}
                         label={'API Key'}
-                        value={editObj.apikey}
+                        value={editObj.apikey as string}
                     />
                     <CustomInput
                         handleChange={(value: string) => {
-                            handleObjChange(value, 'secret');
+                            handleObjChange(value, 'apisecret');
                         }}
                         label={'API Secret'}
-                        value={editObj.secret}
+                        value={editObj.apisecret as string}
                     />
                     {editObj.password && (
                         <CustomInput
