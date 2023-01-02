@@ -17,6 +17,7 @@ export const store = configureStore({
         orders: ordersReducer,
         exchanges: exchangesReducer,
         SelectedExchange: selectExchangeReducer,
+        // theme:
     },
     middleware: getDefaultMiddleware({
         serializableCheck: false,
