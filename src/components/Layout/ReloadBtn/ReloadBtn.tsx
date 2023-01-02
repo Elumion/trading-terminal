@@ -1,5 +1,5 @@
 import { Exchange } from 'ccxt';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { isExchange } from '../../../@typeguards/isExchange';
@@ -10,19 +10,27 @@ import { fetchOrders } from '../../../redux/ordersReducer';
 import { RootState, useAppDispatch } from '../../../redux/store';
 import { Reload } from './ReloadBtn.styles';
 
-const ReloadBtn = () => {
+const ReloadBtn = memo(() => {
     const ccxt = (window as any).ccxt;
     let kucoin = useSelector((state: RootState) => state.SelectedExchange.data);
-
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const reloadBtnRef = useRef(null);
     const dispatch = useAppDispatch();
-    const handleReload = () => {
-        if (isExchange(kucoin)) {
-            dispatch(fetchCoins(kucoin));
-            dispatch(fetchBalance(kucoin));
-            dispatch(fetchOrders(kucoin));
-            dispatch(fetchExchanges());
-        }
+    const handleReload = async () => {
+        if (!isExchange(kucoin)) return;
+        setIsLoading(true);
+        await dispatch(fetchCoins(kucoin));
+        await dispatch(fetchBalance(kucoin));
+        await dispatch(fetchOrders(kucoin));
+        await dispatch(fetchExchanges());
+        setIsLoading(false);
     };
+
+    useEffect(() => {
+        if (!reloadBtnRef) return;
+        const btn = reloadBtnRef.current as unknown as HTMLButtonElement;
+        btn.classList.toggle('loading');
+    }, [isLoading]);
 
     const reloadOrders = async (exchange: Exchange) => {
         if (isExchange(kucoin)) dispatch(fetchOrders(kucoin));
@@ -36,7 +44,7 @@ const ReloadBtn = () => {
     }, [kucoin]);
 
     return (
-        <Reload onClick={handleReload}>
+        <Reload onClick={handleReload} ref={reloadBtnRef} className={'loading'}>
             <svg
                 fill="#ffffff"
                 xmlns="http://www.w3.org/2000/svg"
@@ -55,5 +63,5 @@ const ReloadBtn = () => {
             </svg>
         </Reload>
     );
-};
+});
 export default ReloadBtn;
